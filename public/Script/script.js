@@ -4,6 +4,7 @@ const registerLink = document.querySelector('.register-link');
 const btnPopup = document.querySelector('.btnLogin-popup')
 const iconClose = document.querySelector('.icon-close')
 
+
 registerLink.addEventListener('click', ()=>{
 wrapper.classList.add('active');
 
@@ -79,12 +80,42 @@ async function registerUser(event){
 async function logIn(event){
     event.preventDefault()
     const baseUrl = 'http://localhost:9999/'
+    const email = document.getElementById("logEmail")
+    const password = document.getElementById("logPass")
 
-    const result = await fetch(baseUrl + "logIn",{
-        method:'GET'
-        
+
+    //const checkExist = await fetch()
+
+
+    const result = await fetch(baseUrl + "test", {
+        method: 'POST',
+        headers:{
+            "Content-Type":'application/json'
+        },
+        body: JSON.stringify({
+            params:{
+            email: email.value,
+            pass: password.value
+            }
+        })
     })
+
+    let convertedResult = await result.json()
+
+    if (convertedResult.status === "success"){
+        console.log('User found')
+        wrapper.classList.remove('active-popup');
+    } else {
+        console.log('No user found')
+    }
 }
+
+
+
+
+//CHeck for existence
+
+
 
 
 

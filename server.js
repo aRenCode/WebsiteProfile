@@ -54,7 +54,7 @@ app.get('/logIn', (req, res)=>
         console.log('Tst')
     });
 
-app.post('/register', async (req, res) =>{
+app.get('/register', async (req, res) =>{
     const {parcel} = req.body
 
     if(!parcel){
@@ -72,5 +72,28 @@ app.post('/register', async (req, res) =>{
 
    
    
+})
+
+let username = "Anonymous"
+
+
+app.post('/test', async (req, res) =>{
+    const {params} = req.body
+    
+    
+    try{
+        
+    const user = await newUser.findOne({email: params.email, pass: params.pass})
+
+    if (user){
+        console.log(params.email)
+        return res.status(200).send({status:'success', email: params.email})
+    } else{
+        console.log(params.email)
+        return res.status(200).send({status:'failed', email: params.email})
+    }
+    } catch{
+        return res.status(400).send({status:'failed, server side problem'})
+    }
 })
 
