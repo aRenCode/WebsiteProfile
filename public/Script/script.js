@@ -45,7 +45,7 @@ async function registerUser(event){
 
 
 
-    if (username || email || password === null && checkbox.checked){
+    if (email.value == null || password.value == null || !checkbox.checked || username == null){
         console.log('All fields required')
     } else{
 
@@ -96,11 +96,12 @@ async function logIn(event){
     const baseUrl = 'http://localhost:9999/'
     const email = document.getElementById("logEmail")
     const password = document.getElementById("logPass")
+    const checkbox = document.getElementById("lgnCheck")
 
 
     //const checkExist = await fetch()
 
-    if (email || password === null){
+    if (email.value == null || password.value == null || !checkbox.checked){
         console.log("All fields required")
     }else{
 
