@@ -61,10 +61,19 @@ async function registerUser(event){
 
 
 
+
+    const result = await send.json()
+    if (result.status === "Already exists"){
+        wrapper.classList.remove('active');
+    }
+
+
+
+    /*
     const result = await fetch(baseUrl + "info/check",{
         method:'GET'
         
-    })
+    })*/
 
 
 
@@ -72,7 +81,7 @@ async function registerUser(event){
 
 
     //console.log(result)
-    const data = await result.json()
+    //const data = await result.json()
     //username.value = data.info
 }
 
@@ -87,7 +96,7 @@ async function logIn(event){
     //const checkExist = await fetch()
 
 
-    const result = await fetch(baseUrl + "test", {
+    const result = await fetch(baseUrl + "loginCreds", {
         method: 'POST',
         headers:{
             "Content-Type":'application/json'
