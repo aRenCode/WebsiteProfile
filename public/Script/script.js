@@ -38,12 +38,16 @@ async function registerUser(event){
     const username = document.getElementById("username")
     const email = document.getElementById("email")
     const password = document.getElementById("password")
+    const checkbox = document.getElementById("regCheck")
 
     const baseUrl = 'http://localhost:9999/'
 
 
 
 
+    if (email.value == null || password.value == null || !checkbox.checked || username == null){
+        console.log('All fields required')
+    } else{
 
     const send = await fetch(baseUrl + "register", {
         method: 'POST',
@@ -61,10 +65,20 @@ async function registerUser(event){
 
 
 
+
+    const result = await send.json()
+    if (result.status === "Already exists"){
+        wrapper.classList.remove('active');
+    }
+
+    }
+
+
+    /*
     const result = await fetch(baseUrl + "info/check",{
         method:'GET'
         
-    })
+    })*/
 
 
 
@@ -72,7 +86,7 @@ async function registerUser(event){
 
 
     //console.log(result)
-    const data = await result.json()
+    //const data = await result.json()
     //username.value = data.info
 }
 
@@ -82,12 +96,16 @@ async function logIn(event){
     const baseUrl = 'http://localhost:9999/'
     const email = document.getElementById("logEmail")
     const password = document.getElementById("logPass")
+    const checkbox = document.getElementById("lgnCheck")
 
 
     //const checkExist = await fetch()
 
+    if (email.value == null || password.value == null || !checkbox.checked){
+        console.log("All fields required")
+    }else{
 
-    const result = await fetch(baseUrl + "test", {
+    const result = await fetch(baseUrl + "loginCreds", {
         method: 'POST',
         headers:{
             "Content-Type":'application/json'
@@ -108,6 +126,7 @@ async function logIn(event){
     } else {
         console.log('No user found')
     }
+}
 }
 
 

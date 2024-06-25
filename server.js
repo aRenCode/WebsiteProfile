@@ -54,21 +54,32 @@ app.get('/logIn', (req, res)=>
         console.log('Tst')
     });
 
-app.get('/register', async (req, res) =>{
+app.post('/register', async (req, res) =>{
     const {parcel} = req.body
 
     if(!parcel){
         return res.status(400).send({status:'failed'})
-    }0
-    res.status(200).send({status:'received'})
+    }
+
+
+    if(newUser.findOne({email: parcel.Email}) || newUser.findOne( {username: parcel.Username})){
+        console.log("Username or email already exists")
+        res.status(200).send({status:'Already exists'})
+    } else{
+
+    
 
     let NewUser = new newUser({
         username: parcel.Username,
         email: parcel.Email,
         pass: parcel.Pass
     })
+
+
     await NewUser.save()
-    console.log('Done')
+    res.status(200).send({status:'Created'})
+
+}
 
    
    
@@ -77,7 +88,7 @@ app.get('/register', async (req, res) =>{
 let username = "Anonymous"
 
 
-app.post('/test', async (req, res) =>{
+app.post('/loginCreds', async (req, res) =>{
     const {params} = req.body
     
     
