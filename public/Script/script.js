@@ -38,12 +38,16 @@ async function registerUser(event){
     const username = document.getElementById("username")
     const email = document.getElementById("email")
     const password = document.getElementById("password")
+    const checkbox = document.getElementById("regCheck")
 
     const baseUrl = 'http://localhost:9999/'
 
 
 
 
+    if (username || email || password === null && checkbox.checked){
+        console.log('All fields required')
+    } else{
 
     const send = await fetch(baseUrl + "register", {
         method: 'POST',
@@ -67,6 +71,7 @@ async function registerUser(event){
         wrapper.classList.remove('active');
     }
 
+    }
 
 
     /*
@@ -95,6 +100,9 @@ async function logIn(event){
 
     //const checkExist = await fetch()
 
+    if (email || password === null){
+        console.log("All fields required")
+    }else{
 
     const result = await fetch(baseUrl + "loginCreds", {
         method: 'POST',
@@ -117,6 +125,7 @@ async function logIn(event){
     } else {
         console.log('No user found')
     }
+}
 }
 
 
