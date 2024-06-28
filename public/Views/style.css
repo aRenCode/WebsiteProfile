@@ -137,6 +137,23 @@ body {
     z-index: 1;
 }
 
+.popup.active .icon-close-popup {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 30px;
+    height: 30px;
+    background: #162938;
+    font-size: 2em;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    cursor: pointer;
+    z-index: 1;
+}
+
 .wrapper.active {
     height: 520px;
 }
@@ -288,5 +305,21 @@ body {
     background-color: transparent;
     backdrop-filter: blur(20px);
     border: 2px solid rgba(255, 255, 255, .5);
-    visibility: hidden;
+    transition: transform .7s ease, height .2s ease;
+
+    transform: scale(0);
+}
+
+.popup.active{
+    position: absolute;
+    width:400px;
+    height:100px;
+    margin:10px;
+    padding:10px;
+    border-radius: 20px;
+    background-color: transparent;
+    backdrop-filter: blur(20px);
+    border: 2px solid rgba(255, 255, 255, .5);
+    transform: scale(1);
+
 }

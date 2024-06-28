@@ -3,6 +3,9 @@ const loginLink = document.querySelector('.login-link');
 const registerLink = document.querySelector('.register-link');
 const btnPopup = document.querySelector('.btnLogin-popup')
 const iconClose = document.querySelector('.icon-close')
+const popup = document.querySelector('.popup')
+const popupClose = document.querySelector('.icon-close-popup')
+let popupMsg = document.getElementById('popupTxt')
 
 
 registerLink.addEventListener('click', ()=>{
@@ -24,6 +27,11 @@ iconClose.addEventListener('click', ()=>{
 
     wrapper.classList.remove('active-popup');
 });
+
+popupClose.addEventListener('click', () => {
+    popup.classList.remove('active')
+
+})
 
 
 //to server
@@ -69,6 +77,8 @@ async function registerUser(event){
     const result = await send.json()
     if (result.status === "Already exists"){
         wrapper.classList.remove('active');
+        popup.classList.add('active')
+        popupMsg.innerHTML = "Username or email already exist"
     }
 
     }
@@ -124,7 +134,10 @@ async function logIn(event){
         console.log('User found')
         wrapper.classList.remove('active-popup');
     } else {
-        console.log('No user found')
+        console.log('No user found!')
+        popup.classList.add('active')
+        popupMsg.innerHTML = "Email or username don't exist"
+        
     }
 }
 }
