@@ -79,24 +79,30 @@ async function registerUser(event){
         wrapper.classList.remove('active');
         popup.classList.add('active')
         popupMsg.innerHTML = "Username or email already exist"
+    } else{
+        wrapper.classList.remove('active');
+        popup.classList.add('active')
+        popupMsg.innerHTML = "Account created!"
     }
 
     }
 
 
-    /*
-    const result = await fetch(baseUrl + "info/check",{
+
+
+    const result = await fetch(baseUrl + "tests/test",{
         method:'GET'
         
-    })*/
+    })
 
 
 
 
 
 
-    //console.log(result)
-    //const data = await result.json()
+  
+    const data = await result.json()
+    console.log(result)
     //username.value = data.info
 }
 

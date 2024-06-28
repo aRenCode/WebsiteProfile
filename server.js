@@ -4,6 +4,8 @@ const port = 9999
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const Schema = mongoose.Schema;
+const forumRoute = require('./public/Backend/forum')
+const newUser = require('./public/model/model')
 
 const app = express()
 
@@ -13,26 +15,11 @@ app.use(express.static(path.join(__dirname, 'public/Views')));
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(express.json())
 
+app.use('/tests', forumRoute)
+
 mongoose.connect('mongodb+srv://pryvya:test123@aren.a04dm6v.mongodb.net/Users')
 
-//DB STUFF
 
-const regSchema = new Schema({
-    username: {
-        type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        required: true
-    },
-    pass: {
-        type: String,
-        required: true
-    }
-});
-
-const newUser = mongoose.model("Users", regSchema)
 
 //GETTERS SETTERS PORTS
 
@@ -62,7 +49,8 @@ app.post('/register', async (req, res) =>{
     }
 
 
-    if(newUser.findOne({email: parcel.Email}) || newUser.findOne( {username: parcel.Username})){
+    if(await newUser.exists({email: parcel.Email}) || await newUser.exists( {username: parcel.Username})){
+       // || newUser.exists( {username: parcel.Username})
         console.log("Username or email already exists")
         res.status(200).send({status:'Already exists'})
     } else{
@@ -107,4 +95,6 @@ app.post('/loginCreds', async (req, res) =>{
         return res.status(400).send({status:'failed, server side problem'})
     }
 })
+
+
 
