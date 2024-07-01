@@ -6,7 +6,22 @@ const iconClose = document.querySelector('.icon-close')
 const popup = document.querySelector('.popup')
 const popupClose = document.querySelector('.icon-close-popup')
 let popupMsg = document.getElementById('popupTxt')
+const baseUrl = 'http://localhost:9999/'
 
+let Username = "Login"
+
+window.addEventListener('load', async () =>{
+    console.log('Loaded')
+    const changes = await fetch(baseUrl + 'getUsername', {
+        method:'GET'
+    })
+
+    const result = await changes.json()
+    console.log(result.username)
+    btnPopup.innerHTML = result.username
+
+
+})
 
 registerLink.addEventListener('click', ()=>{
 wrapper.classList.add('active');
@@ -48,7 +63,7 @@ async function registerUser(event){
     const password = document.getElementById("password")
     const checkbox = document.getElementById("regCheck")
 
-    const baseUrl = 'http://localhost:9999/'
+    
 
 
 
@@ -90,10 +105,10 @@ async function registerUser(event){
 
 
 
-    const result = await fetch(baseUrl + "tests/test",{
-        method:'GET'
+    //const result = await fetch(baseUrl + "tests/test",{
+     //   method:'GET'
         
-    })
+    //})
 
 
 
@@ -101,15 +116,15 @@ async function registerUser(event){
 
 
   
-    const data = await result.json()
-    console.log(result)
+    //const data = await result.json()
+    //console.log(result)
     //username.value = data.info
 }
 
 
 async function logIn(event){
     event.preventDefault()
-    const baseUrl = 'http://localhost:9999/'
+   
     const email = document.getElementById("logEmail")
     const password = document.getElementById("logPass")
     const checkbox = document.getElementById("lgnCheck")
@@ -139,6 +154,8 @@ async function logIn(event){
     if (convertedResult.status === "success"){
         console.log('User found')
         wrapper.classList.remove('active-popup');
+        Username = convertedResult.username
+        btnPopup.innerHTML = Username
     } else {
         console.log('No user found!')
         popup.classList.add('active')

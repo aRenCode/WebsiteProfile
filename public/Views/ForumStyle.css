@@ -66,8 +66,10 @@ body {
 }
 
 .messageBtn{
-    width: 130px;
+    min-width: 130px;
+    width:auto;
     height: 50px;
+
     background: transparent;
     border: 2px solid white;
     outline: none;
@@ -128,7 +130,7 @@ body {
 }
 
 .btnLogin-popup {
-    width: 130px;
+    width: auto;
     height: 50px;
     background: transparent;
     border: 2px solid white;
@@ -136,6 +138,7 @@ body {
     border-radius: 6px;
     cursor: pointer;
     font-size: 1.1em;
+    min-width: 130px;
     color: white;
     font-weight: 500;
     margin-left: 40px;
@@ -180,3 +183,113 @@ body {
 
 }
 
+/* popup windows */
+.popup-error{
+    position: absolute;
+    width:400px;
+    height:100px;
+    margin:10px;
+    padding:10px;
+    border-radius: 20px;
+    background-color: transparent;
+    backdrop-filter: blur(20px);
+    border: 2px solid rgba(255, 255, 255, .5);
+    transition: transform .7s ease, height .2s ease;
+
+    transform: scale(0);
+}
+
+.popup-error.active{
+    position: absolute;
+    width:400px;
+    height:100px;
+    margin:10px;
+    padding:10px;
+    border-radius: 20px;
+    background-color: transparent;
+    backdrop-filter: blur(20px);
+    border: 2px solid rgba(255, 255, 255, .5);
+    transform: scale(1);
+
+}
+
+.popup-error .icon-close-popup {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 40px;
+    height: 40px;
+    background: #162938;
+    font-size: 2em;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    cursor: pointer;
+    z-index: 1;
+}
+
+
+.messageForm{
+    position: absolute;
+    width:400px;
+    height:auto;
+    margin:10px;
+    padding:10px;
+    border-radius: 20px;
+    background-color: transparent;
+    backdrop-filter: blur(20px);
+    border: 2px solid rgba(255, 255, 255, .5);
+    transition: transform .7s ease, height .2s ease;
+
+    transform: scale(0);
+}
+
+.messageForm.active{
+
+
+    transform: scale(1);
+}
+
+.messageForm .messageInput{
+    font-family: "Roboto", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 1.1em;
+    height:80%;
+    width: 90%;
+    min-height: 200px;
+    resize: vertical;
+    
+}
+
+.messageForm .icon-close-message{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 30px;
+    height: 30px;
+    background: #162938;
+    font-size: 2em;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.messageForm button{
+    width: 100%;
+    height: 45px;
+    background: #162938;
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    color: white;
+    font-weight: 500;
+}

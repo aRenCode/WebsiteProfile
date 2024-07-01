@@ -7,6 +7,8 @@ const Schema = mongoose.Schema;
 const forumRoute = require('./public/Backend/forum')
 const newUser = require('./public/model/model')
 
+let Username = "Login"
+
 const app = express()
 
 //app.use(express.static('Views'))
@@ -15,7 +17,7 @@ app.use(express.static(path.join(__dirname, 'public/Views')));
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(express.json())
 
-app.use('/tests', forumRoute)
+app.use('/forum', forumRoute)
 
 mongoose.connect('mongodb+srv://pryvya:test123@aren.a04dm6v.mongodb.net/Users')
 
@@ -85,15 +87,20 @@ app.post('/loginCreds', async (req, res) =>{
     const user = await newUser.findOne({email: params.email, pass: params.pass})
 
     if (user){
-        console.log(params.email)
-        return res.status(200).send({status:'success', email: params.email})
+        Username = user.username
+        return res.status(200).send({status:'success', username: user.username})
+
     } else{
-        console.log(params.email)
-        return res.status(200).send({status:'failed', email: params.email})
+        
+        return res.status(200).send({status:'failed'})
     }
     } catch{
         return res.status(400).send({status:'failed, server side problem'})
     }
+})
+
+app.get('/getUsername', (req, res) => {
+    return res.status(200).send({username:Username})
 })
 
 
