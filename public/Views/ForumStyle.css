@@ -65,7 +65,7 @@ body {
     background-position: center;
 }
 
-.messageBtn{
+.forumNewHeader .messageBtn{
     min-width: 130px;
     width:auto;
     height: 50px;
@@ -86,11 +86,34 @@ body {
     margin-top: 20vh;
 }
 
-.messageBtn:hover {
+.forumNewHeader button:hover {
     background: white;
     color: #162938;
 
 }
+
+.forumNewHeader button{
+    min-width: 100px;
+    width:auto;
+    height: 50px;
+
+    background: transparent;
+    border: 2px solid white;
+    outline: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.1em;
+    color: white;
+    font-weight: 500;
+    transition: .5s;
+    position: relative;
+    align-self: flex-start;
+    margin-left: 0.5vw;
+    margin-right: 40px;
+    margin-top: 20vh;
+}
+
+
 
 .logo {
     font-size: 2em;
@@ -292,4 +315,61 @@ body {
     font-size: 1em;
     color: white;
     font-weight: 500;
+}
+
+.forumNewHeader {
+    display: flex;
+    position: relative;
+    align-self: flex-start;
+
+}
+
+.dropdown{
+
+    position: relative;
+
+}
+
+.content{
+
+    background-color: #162938;
+    border: 2px solid white;
+    margin-left: 0.5vw;
+    position:absolute;
+
+    min-width: 100px;
+    width: auto;
+    text-align: center;
+    outline: none;
+    border-radius: 6px;
+    cursor: pointer;
+    visibility: hidden;
+}
+
+.dropdownBtn:hover + .content{
+    visibility: visible;
+}
+
+
+.content a{
+
+ 
+    display: block;
+    color: white;
+    padding: 5px 10px;
+    min-width: auto;
+   
+    
+    
+
+}
+
+.content a:hover{
+    color: black;
+    background-color: white;
+    
+}
+
+.content:hover{
+    visibility: visible;
 }

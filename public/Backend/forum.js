@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 //const Schema = require('../model/model');
 
 const router = express.Router()
+let pageLim = 20
 
 
 
@@ -29,6 +30,8 @@ const regSchema = new Schema({
 
 const newMessage = mongoose.model('Messages', regSchema)
 
+db = mongoose.connection
+
 
 
 
@@ -51,5 +54,27 @@ router.post('/addMessage', async (req, res)=>
             res.status(400).send({status:"failed to send"})
         }
     });
+
+router.get('/getPages', async (req, res) =>{
+    const checkPages = await newMessage.countDocuments()
+    
+    if (checkPages){
+        res.status(200).send({status:"success", number: Math.floor(checkPages / pageLim)+1, limit: pageLim})
+    } else{
+        res.status(400).send({status:"failed"})
+    }
+})
+
+router.get('/getLast', async (req, res) => {
+
+    
+    const data = await newMessage.find().sort({ date: 1});
+   
+    if (data){
+        res.status(200).send({status: 'success', texts: data})
+    } else{
+        res.status(400).send({status: 'failed'})
+    }
+})
 
 module.exports = router;
