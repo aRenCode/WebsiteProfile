@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 //const Schema = require('../model/model');
 
 const router = express.Router()
+let lastMessageDate;
 let pageLim = 20
 
 
@@ -68,8 +69,20 @@ router.get('/getPages', async (req, res) =>{
 router.get('/getLast', async (req, res) => {
 
     
-    const data = await newMessage.find().sort({ date: 1});
-   
+    const data = await newMessage.find().sort({ date: 1}).limit(pageLim);
+
+    //getInfoForServer
+    lastMessageDate = data[data.length-1].date
+
+    if (data){
+        res.status(200).send({status: 'success', texts: data})
+    } else{
+        res.status(400).send({status: 'failed'})
+    }
+})
+
+router.get('/newMessages', async (req, res) => {
+    const data = await newMessage.find({date: { $gt: lastMessageDate }});
     if (data){
         res.status(200).send({status: 'success', texts: data})
     } else{
