@@ -12,12 +12,16 @@ const baseUrl = 'http://localhost:9999/'
 const loginBtn = document.querySelector('.btnLogin-popup')
 const messageForm = document.querySelector('.messageForm')
 const closeMessage = document.querySelector('.icon-close-message')
+const closeFindUser = document.querySelector('.icon-close-find-user')
 const sendBtn = document.getElementById('sendMessage')
 const messageInput = document.querySelector('.messageInput')
+const usernameInputFilter = document.querySelector('.nameInput')
 const limitBtn = document.getElementById('limBtn')
 const fromBtn = document.getElementById('fromBtn')
 const dtStartBtn = document.getElementById('dateStart')
 const dtEndBtn = document.getElementById('dateEnd')
+const findUserBtn = document.getElementById('applyUsername')
+const findUser = document.querySelector('.findUser')
 
 
 
@@ -30,24 +34,25 @@ let dateStart;
 let dateEnd;
 
 
+
 async function loadMessages(messages){
 
     if (messages.status === 'success'){
 
         const data = messages.texts
-        
-        messages.texts.forEach((element) => {
+
+        data.forEach((element) => {
             const div = document.createElement('div')
             div.classList.add('item')
 
             const aName = document.createElement('a')
-            let text = document.createTextNode(element.username + ": ")
+            let text = document.createTextNode(element.username.toString())
             aName.appendChild(text)
             aName.classList.add('user')
             
 
             const aMessage = document.createElement('a')
-            text = document.createTextNode(element.msg)
+            text = document.createTextNode(": " + element.msg)
             aMessage.appendChild(text)
             aMessage.classList.add('message')
 
@@ -81,14 +86,23 @@ function pagesValidate(){
     }
 }
 
-document.addEventListener('click', (e) =>
+document.addEventListener('click', async (e) =>
     {
         
         var element = e.target
-        if (element.classList === "page"){
-            console.log(element.innerHTML)
-        } else{
+        //console.log(element.classList)
+        if (element.className === "page"){
             
+            //console.log(element.innerHTML)
+            dropBtn.innerHTML = 'Page: ' + element.innerHTML
+            pageNum = Number(element.innerHTML)
+
+        } else if(element.className === "limit"){
+            //console.log(element.innerHTML)
+            limitBtn.innerHTML = 'Limit: ' + element.innerHTML
+            pageLim = Number(element.innerHTML)
+        } else{
+
         }
     })
 
@@ -100,6 +114,22 @@ dropBtn.addEventListener('click', () =>{
 
 })
 
+fromBtn.addEventListener('click', ()=>{
+    findUser.classList.add('active')
+})
+
+closeFindUser.addEventListener('click', ()=>{
+    findUser.classList.remove('active')
+})
+
+findUserBtn.addEventListener('click', ()=>{
+    fromUser = usernameInputFilter.value
+    fromBtn.innerHTML = 'From ' + fromUser 
+    findUser.classList.remove('active')
+
+})
+
+
 refreshBtn.addEventListener('click', async ()=>{
     let res = await fetch(baseUrl + 'forum/newMessages', {
         method: 'GET'
@@ -108,6 +138,8 @@ refreshBtn.addEventListener('click', async ()=>{
     res = await res.json()
 
     loadMessages(res)
+
+
 
 })
 
@@ -157,8 +189,33 @@ sendBtn.addEventListener('click', async ()=>{
                 }
             })
         })
+
+        const res = await send.json()
+        if (res.status === "success"){
+            const div = document.createElement('div')
+            div.classList.add('item')
+
+            const aName = document.createElement('a')
+            let text = document.createTextNode(loginBtn.innerHTML.toString())
+            aName.appendChild(text)
+            aName.classList.add('user')
+            
+
+            const aMessage = document.createElement('a')
+            text = document.createTextNode(": " + input)
+            aMessage.appendChild(text)
+            aMessage.classList.add('message')
+
+            div.appendChild(aName)
+            div.appendChild(aMessage)
+            forumBox.appendChild(div)
+        } else{
+
+        }
         
     }
+
+    
 })
 
 

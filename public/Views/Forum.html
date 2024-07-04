@@ -31,9 +31,8 @@
       <div class = "dropdown">
         <button class="dropdownBtn">Page: 1</button>
         <div class ="content">
-            <a class="page">
-                1
-            </a>
+            <a class="page">1</a>
+            
 
            
             
@@ -41,13 +40,28 @@
         </div>
       </div>
 
-      <button id ='limBtn' class = 'test'>Limit: 20</button>
+      
+      <div class = "dropdown">
+        <button id ='limBtn' class = 'limitBtn'>Limit: 20</button>
+        <div class ="content">
+            <a class="limit">5</a>
+            <a class="limit">10</a>
+            <a class="limit">25</a>
+            <a class="limit">50</a>
+
+           
+            
+            
+        </div>
+      </div>
 
       <button id ='fromBtn'>From</button>
 
       <button id = 'dateStart'>Date Start</button>
 
       <button id = 'dateEnd'>Date End</button>
+
+      <button id="clearBtn">Clear</button>
 
       <button id="refreshBtn">Refresh</button>
 
@@ -61,6 +75,7 @@
             <a class="message">
                 : Test message here
             </a>
+            
 
         </div>
         
@@ -83,6 +98,15 @@
         </div>
         <span class="icon-close-message"><ion-icon name="close-outline"></ion-icon></span>
         <button id = "sendMessage">Send</button>
+    </div>
+
+    <div class="findUser" >
+        <h2>Type a username</h2>
+        <div class="input-box">
+            <input  required class='nameInput'></input>
+        </div>
+        <span class="icon-close-find-user"><ion-icon name="close-outline"></ion-icon></span>
+        <button id = "applyUsername">Apply</button>
     </div>
 
 
