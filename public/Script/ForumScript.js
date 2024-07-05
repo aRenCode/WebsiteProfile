@@ -29,10 +29,11 @@ const findUser = document.querySelector('.findUser')
 let pages = 1
 let pageNum = 1
 let pageLim = 20
-let fromUser;
-let dateStart;
-let dateEnd;
-
+let fromUser = '.*';
+let dateStart = '';
+let dateEnd = '';
+let filtersChanged = false
+let numberOfMessages = 0
 
 
 async function loadMessages(messages){
@@ -68,14 +69,28 @@ async function loadMessages(messages){
     }
 }
 
+function checkForFilterChange(){
+    return pageNum == dropBtn.innerHTML.substring(5)  && pageLim == limitBtn.innerHTML.substring(6) &&
+    fromUser == fromBtn.innerHTML.substring(5)
+
+}
+
+
+
 function pagesValidate(){
 
-    const children = forumBox.childElementCount
+    
+    const children = numberOfMessages
 
-    while(Math.floor(children / pageLim)+1 > pages){
+
+
+
+
+    while(Math.ceil(children / pageLim) > pages){
         pages++;
         const a = document.createElement('a')
         const textNode = document.createTextNode(pages.toString())
+        a.classList.add('page')
         a.appendChild(textNode)
         
         
@@ -84,11 +99,24 @@ function pagesValidate(){
  
         
     }
+
+    console.log('Pages: ' + pages)
+    console.log(numberOfMessages)
+
+    let temp = Math.ceil(numberOfMessages/pageLim)
+    while(pages > temp){
+        pages--;
+        pagesDropdown.lastChild.remove()
+    }
+
+
+
+
 }
 
 document.addEventListener('click', async (e) =>
     {
-        
+       
         var element = e.target
         //console.log(element.classList)
         if (element.className === "page"){
@@ -96,11 +124,14 @@ document.addEventListener('click', async (e) =>
             //console.log(element.innerHTML)
             dropBtn.innerHTML = 'Page: ' + element.innerHTML
             pageNum = Number(element.innerHTML)
+            filtersChanged = true
 
         } else if(element.className === "limit"){
             //console.log(element.innerHTML)
             limitBtn.innerHTML = 'Limit: ' + element.innerHTML
             pageLim = Number(element.innerHTML)
+            filtersChanged = true
+            pagesValidate()
         } else{
 
         }
@@ -126,18 +157,71 @@ findUserBtn.addEventListener('click', ()=>{
     fromUser = usernameInputFilter.value
     fromBtn.innerHTML = 'From ' + fromUser 
     findUser.classList.remove('active')
+    filtersChanged = true
 
 })
 
 
 refreshBtn.addEventListener('click', async ()=>{
+
+    //console.log(!filtersChanged)
+    if (!filtersChanged){
     let res = await fetch(baseUrl + 'forum/newMessages', {
         method: 'GET'
     })
 
     res = await res.json()
 
+
+    
+ 
+
     loadMessages(res)
+    pagesValidate()
+    
+
+
+} else{
+
+
+
+    let res = await fetch(baseUrl + 'forum/newFilters', {
+        method: 'POST',
+        headers:{
+            "Content-Type":'application/json'
+        },
+        body: JSON.stringify({
+            filters:{
+            pageNum: pageNum,
+            pageLim: pageLim,
+            fromUser: fromUser,
+            dateStart: dateStart,
+            dateEnd: dateEnd
+            }
+        })
+    })
+
+    filtersChanged = false
+
+    res = await res.json()
+
+    if (res.status === "success"){
+        forumBox.innerHTML = '';
+
+
+        if(res.specificFilter == true){
+            numberOfMessages = res.texts.length
+        }
+        
+        loadMessages(res)
+        pagesValidate()
+
+
+    }else{
+        console.log("Error, can't get data from filters")
+    }
+}
+
 
 
 
@@ -242,6 +326,7 @@ window.addEventListener('load', async () =>{
     countpages = await countpages.json()
     if(countpages.status ==="success"){
         pages = countpages.number
+        
 
     } else{
         console.log('Error')
@@ -253,8 +338,11 @@ window.addEventListener('load', async () =>{
         method:'GET'
     })
 
+
   
     messages = await messages.json()
+
+    numberOfMessages = messages.texts.length
 
     
     loadMessages(messages)

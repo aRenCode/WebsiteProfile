@@ -9,6 +9,9 @@ let lastMessageDate;
 let pageLim = 20
 let lastId = 0;
 let pageNum = 1
+let dateStart = ''
+let dateEnd = ''
+let fromUser = '.*'
 
 mongoose.connect('mongodb+srv://pryvya:test123@aren.a04dm6v.mongodb.net/Users')
 
@@ -69,9 +72,8 @@ router.post('/addMessage', async (req, res)=>
 
 router.get('/getPages', async (req, res) =>{
     const checkPages = await newMessage.countDocuments()
-    
     if (checkPages){
-        res.status(200).send({status:"success", number: Math.floor(checkPages / pageLim)+1, limit: pageLim})
+        res.status(200).send({status:"success", number: Math.ceil(checkPages / pageLim), limit: pageLim})
     } else{
         res.status(400).send({status:"failed"})
     }
@@ -99,7 +101,12 @@ router.get('/getLast', async (req, res) => {
 })
 
 router.get('/newMessages', async (req, res) => {
-    const data = await newMessage.find({id: { $gt: lastId }});
+    const data = await newMessage.find({
+
+        username : {$regex : fromUser},
+        id: { $gt: lastId }
+    
+    });
     
     if (data){
         res.status(200).send({status: 'success', texts: data})
@@ -109,6 +116,47 @@ router.get('/newMessages', async (req, res) => {
 
     lastId = await newMessage.find().sort({ id: -1}).limit(1)
     lastId = lastId[0].id
+
+})
+
+router.post('/newFilters', async (req, res) => {
+    const {filters} =  req.body;
+
+    pageNum = filters.pageNum
+    pageLim = filters.pageLim
+    fromUser = filters.fromUser
+    dateStart = filters.dateStart
+    dateEnd = filters.dateEnd
+
+
+    toId = pageNum * pageLim 
+    fromId = toId - pageLim + 1
+
+   
+   
+    const data = await newMessage.find({
+
+        //id: {$gte: fromId, $lte: toId},
+        username : {$regex : fromUser}
+    
+    }).skip(((pageNum-1)*pageLim)).limit(pageLim); 
+
+    
+
+    //Specific filter is for paging purposes, to know how much data there is based on filters
+    let specificFilter = false
+    if (fromUser != '.*' || dateStart != '' || dateEnd != ''){
+        specificFilter = true
+    }
+
+    if (data){
+
+        res.status(200).send({status: 'success', specificFilter: specificFilter, texts: data})
+        
+    } else{
+        res.status(400).send({status: 'failed'})
+    }
+
 
 })
 
