@@ -9,8 +9,8 @@ let lastMessageDate;
 let pageLim = 20
 let lastId = 0;
 let pageNum = 1
-let dateStart = ''
-let dateEnd = ''
+let dateStart = '0001-01-01'
+let dateEnd = '9999-12-31'
 let fromUser = '.*'
 
 mongoose.connect('mongodb+srv://pryvya:test123@aren.a04dm6v.mongodb.net/Users')
@@ -101,8 +101,13 @@ router.get('/getLast', async (req, res) => {
 })
 
 router.get('/newMessages', async (req, res) => {
+    console.log('Last Id: ' + lastId)
+
     const data = await newMessage.find({
 
+        date: {$gte: new Date(dateStart + "T00:00:00.000Z"),
+            $lte: new Date(dateEnd+ "T23:59:59.999Z") 
+        },
         username : {$regex : fromUser},
         id: { $gt: lastId }
     
@@ -133,13 +138,42 @@ router.post('/newFilters', async (req, res) => {
     fromId = toId - pageLim + 1
 
    
-   
+   /*
     const data = await newMessage.find({
 
         //id: {$gte: fromId, $lte: toId},
         username : {$regex : fromUser}
     
-    }).skip(((pageNum-1)*pageLim)).limit(pageLim); 
+    }).skip(((pageNum-1)*pageLim)).limit(pageLim); */
+
+    const data = await newMessage.find({
+
+        date: {$gte: new Date(dateStart+ "T00:00:00.000Z"),
+            $lte: new Date(dateEnd+ "T23:59:59.999Z")
+        },
+        //id: {$gte: fromId, $lte: toId},
+        username : {$regex : fromUser}
+    
+    });
+
+ 
+    console.log(data)
+
+    let pageData = []
+    let from = ((pageNum-1)*pageLim)
+    const To = (pageLim * pageNum) 
+    const len = data.length
+
+    while(from < To){
+
+        if(from < data.length){
+
+
+            pageData.push(data[from])
+        } 
+        from++;
+
+    }
 
     
 
@@ -151,7 +185,7 @@ router.post('/newFilters', async (req, res) => {
 
     if (data){
 
-        res.status(200).send({status: 'success', specificFilter: specificFilter, texts: data})
+        res.status(200).send({status: 'success', specificFilter: specificFilter, length: data.length, texts: pageData})
         
     } else{
         res.status(400).send({status: 'failed'})

@@ -20,8 +20,10 @@ const limitBtn = document.getElementById('limBtn')
 const fromBtn = document.getElementById('fromBtn')
 const dtStartBtn = document.getElementById('dateStart')
 const dtEndBtn = document.getElementById('dateEnd')
+const clearFltrBtn = document.getElementById('clearBtn')
 const findUserBtn = document.getElementById('applyUsername')
 const findUser = document.querySelector('.findUser')
+const h2FindUser = document.getElementById('h2User')
 
 
 
@@ -30,11 +32,27 @@ let pages = 1
 let pageNum = 1
 let pageLim = 20
 let fromUser = '.*';
-let dateStart = '';
-let dateEnd = '';
+let dateStart = '0001-01-01';
+let dateEnd = '9999-12-31';
 let filtersChanged = false
 let numberOfMessages = 0
 
+
+function isValidDate(dateInput){
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+
+    
+    // Check if the date string matches the regex
+    if (!regex.test(dateInput)) {
+        return false;
+    } else{
+        if(new Date(dateInput) == 'Invalid Date'){
+            return false
+        }
+
+        return true
+    }
+}
 
 async function loadMessages(messages){
 
@@ -79,7 +97,7 @@ function checkForFilterChange(){
 
 function pagesValidate(){
 
-    
+    pages = pagesDropdown.childElementCount
     const children = numberOfMessages
 
 
@@ -96,6 +114,7 @@ function pagesValidate(){
         
 
         pagesDropdown.appendChild(a)
+
  
         
     }
@@ -103,11 +122,20 @@ function pagesValidate(){
     console.log('Pages: ' + pages)
     console.log(numberOfMessages)
 
+
     let temp = Math.ceil(numberOfMessages/pageLim)
+
+    console.log(temp)
     while(pages > temp){
         pages--;
-        pagesDropdown.lastChild.remove()
+        console.log(pagesDropdown.firstChild)
+        pagesDropdown.removeChild(pagesDropdown.lastElementChild)
+
+        
     }
+
+
+
 
 
 
@@ -147,17 +175,71 @@ dropBtn.addEventListener('click', () =>{
 
 fromBtn.addEventListener('click', ()=>{
     findUser.classList.add('active')
+        h2FindUser.innerHTML = 'Type a username'
+})
+
+dtStartBtn.addEventListener('click', ()=>{
+    findUser.classList.add('active')
+        h2FindUser.innerHTML = 'Start Date (YYYY-MM-DD)'
+        
+})
+dtEndBtn.addEventListener('click', ()=>{
+    findUser.classList.add('active')
+    h2FindUser.innerHTML = 'End Date (YYYY-MM-DD)'
 })
 
 closeFindUser.addEventListener('click', ()=>{
     findUser.classList.remove('active')
 })
 
+clearFltrBtn.addEventListener('click', ()=>{
+    
+    pageLim = 20
+    limitBtn.innerHTML = 'Limit: 20'
+
+    pages = 1
+    pageNum = 1
+    dropBtn.innerHTML = 'Page: 1'
+
+    fromUser = '.*'
+    fromBtn.innerHTML = 'From'
+
+    dateStart = '0001-01-01'
+    dtStartBtn.innerHTML = 'Date Start'
+
+    dateEnd = '9999-12-31'
+    dtEndBtn.innerHTML = 'Date End'
+
+    filtersChanged = true
+    numberOfMessages = 0
+})
+
 findUserBtn.addEventListener('click', ()=>{
+    if (h2FindUser.innerHTML === "Type a username") {
+
     fromUser = usernameInputFilter.value
     fromBtn.innerHTML = 'From ' + fromUser 
     findUser.classList.remove('active')
     filtersChanged = true
+}
+
+    else if(h2FindUser.innerHTML === 'Start Date (YYYY-MM-DD)'){
+
+    if(isValidDate(usernameInputFilter.value.toString())){
+        dateStart = usernameInputFilter.value
+    }
+    findUser.classList.remove('active')
+    filtersChanged = true
+
+    } else if(h2FindUser.innerHTML === 'End Date (YYYY-MM-DD)'){
+
+        if(isValidDate(usernameInputFilter.value.toString())){
+            dateEnd = usernameInputFilter.value
+        }
+    findUser.classList.remove('active')
+    filtersChanged = true
+
+    }
 
 })
 
@@ -184,6 +266,8 @@ refreshBtn.addEventListener('click', async ()=>{
 } else{
 
 
+    console.log(new Date(dateStart))
+    console.log(new Date(dateEnd))
 
     let res = await fetch(baseUrl + 'forum/newFilters', {
         method: 'POST',
@@ -210,7 +294,7 @@ refreshBtn.addEventListener('click', async ()=>{
 
 
         if(res.specificFilter == true){
-            numberOfMessages = res.texts.length
+            numberOfMessages = res.length
         }
         
         loadMessages(res)
