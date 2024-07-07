@@ -3,6 +3,7 @@ const path = require('path')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 //const Schema = require('../model/model');
+const newMessage = require('../model/messagesForumModel')
 
 const router = express.Router()
 let lastMessageDate;
@@ -15,28 +16,7 @@ let fromUser = '.*'
 
 mongoose.connect('mongodb+srv://pryvya:test123@aren.a04dm6v.mongodb.net/Users')
 
-var Schema = mongoose.Schema;
 
-const regSchema = new Schema({
-    id: {
-        type: Number,
-        required: true
-    },
-    username: {
-        type: String,
-        required: true
-    },
-    date: {
-        type: Date,
-        required: true
-    },
-    msg: {
-        type: String,
-        required: true
-    }
-});
-
-const newMessage = mongoose.model('Messages', regSchema)
 
 db = mongoose.connection
 

@@ -5,6 +5,7 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const Schema = mongoose.Schema;
 const forumRoute = require('./public/Backend/forum')
+const threadRoute = require('./public/Backend/threads')
 const newUser = require('./public/model/model')
 
 let Username = "Login"
@@ -18,6 +19,7 @@ app.use(bodyParser.urlencoded({extended:true}))
 app.use(express.json())
 
 app.use('/forum', forumRoute)
+app.use('/threads', threadRoute)
 
 mongoose.connect('mongodb+srv://pryvya:test123@aren.a04dm6v.mongodb.net/Users')
 

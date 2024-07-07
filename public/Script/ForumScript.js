@@ -21,9 +21,13 @@ const fromBtn = document.getElementById('fromBtn')
 const dtStartBtn = document.getElementById('dateStart')
 const dtEndBtn = document.getElementById('dateEnd')
 const clearFltrBtn = document.getElementById('clearBtn')
+const searchBtn = document.getElementById('searchBtn')
+const addBtn = document.getElementById('addBtn')
 const findUserBtn = document.getElementById('applyUsername')
+const resetBtn = document.getElementById('resetBtn')
 const findUser = document.querySelector('.findUser')
 const h2FindUser = document.getElementById('h2User')
+
 
 
 
@@ -53,6 +57,8 @@ function isValidDate(dateInput){
         return true
     }
 }
+
+
 
 async function loadMessages(messages){
 
@@ -93,7 +99,24 @@ function checkForFilterChange(){
 
 }
 
+function showThreads(threads){
 
+    threads.forEach((element) =>{
+        const div = document.createElement('div')
+            div.classList.add('item')
+
+            const aName = document.createElement('a')
+            let text = document.createTextNode(element.name)
+            aName.appendChild(text)
+            aName.classList.add('user')
+            
+
+
+
+            div.appendChild(aName)
+            forumBox.appendChild(div)
+    })
+}
 
 function pagesValidate(){
 
@@ -142,6 +165,11 @@ function pagesValidate(){
 
 }
 
+function clearForumBox(){
+    forumBox.innerHTML = ''
+}
+
+
 document.addEventListener('click', async (e) =>
     {
        
@@ -171,6 +199,36 @@ dropBtn.addEventListener('click', () =>{
     pagesValidate()
 
 
+})
+
+addBtn.addEventListener('click', () =>{
+        findUser.classList.add('active')
+        h2FindUser.innerHTML = 'Type a Forum Name'
+})
+
+resetBtn.addEventListener('click', async() =>{
+
+    clearForumBox()
+
+    let allThreads = await fetch(baseUrl + "threads/getThreads", {
+        method:'GET'
+    })
+
+    allThreads = await allThreads.json()
+
+    if (allThreads.status == 'success'){
+
+        console.log('Worked')
+        showThreads(allThreads.threads)
+    } else{
+        console.log('Error')
+    }
+})
+
+searchBtn.addEventListener('click', async () => {
+        findUser.classList.add('active')
+        h2FindUser.innerHTML = 'Forum Name to Find'
+    
 })
 
 fromBtn.addEventListener('click', ()=>{
@@ -214,7 +272,7 @@ clearFltrBtn.addEventListener('click', ()=>{
     numberOfMessages = 0
 })
 
-findUserBtn.addEventListener('click', ()=>{
+findUserBtn.addEventListener('click', async ()=>{
     if (h2FindUser.innerHTML === "Type a username") {
 
     fromUser = usernameInputFilter.value
@@ -239,6 +297,53 @@ findUserBtn.addEventListener('click', ()=>{
     findUser.classList.remove('active')
     filtersChanged = true
 
+    } else if (h2FindUser.innerHTML === 'Type a Forum Name'){
+
+        if(usernameInputFilter.value != ""){
+            let res = await fetch(baseUrl + 'threads/addThread', {
+                method: 'POST',
+                headers:{
+                    "Content-Type":'application/json'
+                },
+                body: JSON.stringify({
+                    info:{
+                        date: new Date(),
+                        name: usernameInputFilter.value
+
+                    }
+                })
+            })
+
+        }
+        findUser.classList.remove('active')
+    } else if (h2FindUser.innerHTML === 'Forum Name to Find'){
+
+        console.log(usernameInputFilter.value)
+        if(usernameInputFilter.value != ""){
+            let res = await fetch(baseUrl + 'threads/findThreads', {
+                method: 'POST',
+                headers:{
+                    "Content-Type":'application/json'
+                },
+                body: JSON.stringify({
+                    info:{
+                        name: usernameInputFilter.value.toString()
+
+                    }
+                })
+            })
+
+            res = await res.json()
+            if (res.status == 'success'){
+
+                clearForumBox()
+                showThreads(res.threads)
+            } else{
+                console.log('Error')
+            }
+
+        }
+        findUser.classList.remove('active')
     }
 
 })
@@ -266,8 +371,6 @@ refreshBtn.addEventListener('click', async ()=>{
 } else{
 
 
-    console.log(new Date(dateStart))
-    console.log(new Date(dateEnd))
 
     let res = await fetch(baseUrl + 'forum/newFilters', {
         method: 'POST',
@@ -401,6 +504,7 @@ window.addEventListener('load', async () =>{
     loginBtn.innerHTML = result.username
 
 
+    /*
     //COUNTING PAGES
 
     let countpages = await fetch(baseUrl + 'forum/getPages', {
@@ -435,6 +539,26 @@ window.addEventListener('load', async () =>{
     //pages
 
     pagesValidate()
+    */
+
+
+    //GET Threads
+    let allThreads = await fetch(baseUrl + "threads/getThreads", {
+        method:'GET'
+    })
+
+    allThreads = await allThreads.json()
+
+    if (allThreads.status == 'success'){
+
+        clearForumBox()
+        console.log('Worked')
+        showThreads(allThreads.threads)
+    } else{
+        console.log('Error')
+    }
+
+    //Populate the table with threads
 
 })
 

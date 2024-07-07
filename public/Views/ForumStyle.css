@@ -70,6 +70,7 @@ body {
     width:auto;
     height: 50px;
 
+    
     background: #25292b;
     border: 2px solid white;
     outline: none;
@@ -97,6 +98,9 @@ body {
     width:auto;
     height: 50px;
 
+    padding-left: 0.5vw;
+    padding-right: 0.5vw;
+ 
     background: #25292b;
     border: 2px solid white;
     outline: none;
@@ -111,9 +115,27 @@ body {
     margin-left: 0.2vw;
     margin-right: 20px;
     margin-top: 20vh;
+ 
 }
 
+.forumNewHeader.activeForum{
+    visibility: hidden;
+}
 
+.forumNewHeader.activeForum  .threads{
+    visibility: visible;
+}
+
+.forumNewHeader  .threads{
+    visibility: hidden;
+}
+
+.threads{
+    align-self: flex-start;
+    position: absolute;
+    left: 5vw;
+
+}
 
 .logo {
     font-size: 2em;
@@ -190,6 +212,7 @@ body {
     flex-direction: column;
     overflow-x: hidden;
     overflow-y: auto;
+    
 }
 
 .forumBox .item{
@@ -198,13 +221,17 @@ body {
     background: transparent;
     padding: 5px;
     margin: 5px;
+    
 }
 
 .forumBox .item .user{
     text-decoration: underline;
     color: cadetblue;
+    cursor: pointer;
 
 }
+
+
 
 /* popup windows */
 .popup-error{
@@ -387,6 +414,7 @@ body {
     display: flex;
     position: relative;
     align-self: flex-start;
+    visibility: visible;
 
 }
 
