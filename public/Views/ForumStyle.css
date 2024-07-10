@@ -124,10 +124,15 @@ body {
 
 .forumNewHeader.activeForum  .threads{
     visibility: visible;
+    opacity: 1;
+    transition: 2s;
 }
 
 .forumNewHeader  .threads{
     visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.1s ease;
+
 }
 
 .threads{
@@ -415,6 +420,9 @@ body {
     position: relative;
     align-self: flex-start;
     visibility: visible;
+    transition: all 0.3s ease;
+    opacity: 1;
+    
 
 }
 

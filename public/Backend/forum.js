@@ -23,7 +23,7 @@ db = mongoose.connection
 
 
 
-console.log('Check123')
+
 
 router.post('/addMessage', async (req, res)=>
     {
@@ -137,7 +137,7 @@ router.post('/newFilters', async (req, res) => {
     });
 
  
-    console.log(data)
+    
 
     let pageData = []
     let from = ((pageNum-1)*pageLim)

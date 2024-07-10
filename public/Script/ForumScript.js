@@ -27,6 +27,7 @@ const findUserBtn = document.getElementById('applyUsername')
 const resetBtn = document.getElementById('resetBtn')
 const findUser = document.querySelector('.findUser')
 const h2FindUser = document.getElementById('h2User')
+const forumNewHeader = document.querySelector('.forumNewHeader')
 
 
 
@@ -41,6 +42,44 @@ let dateEnd = '9999-12-31';
 let filtersChanged = false
 let numberOfMessages = 0
 
+
+async function loadThread(){
+
+    clearForumBox()
+
+    let countpages = await fetch(baseUrl + 'forum/getPages', {
+        methdod:'GET'
+    })
+
+    countpages = await countpages.json()
+    if(countpages.status ==="success"){
+        pages = countpages.number
+        
+
+    } else{
+        console.log('Error')
+    }
+
+    //GETTING THE LAST DEFAULT NUMBER(20) OF MESSAGES IN
+
+    let messages = await fetch(baseUrl+ 'forum/getLast', {
+        method:'GET'
+    })
+
+
+  
+    messages = await messages.json()
+
+    numberOfMessages = messages.texts.length
+
+    
+    loadMessages(messages)
+
+
+    //pages
+
+    pagesValidate()
+}
 
 function isValidDate(dateInput){
     const regex = /^\d{4}-\d{2}-\d{2}$/;
@@ -151,7 +190,7 @@ function pagesValidate(){
     console.log(temp)
     while(pages > temp){
         pages--;
-        console.log(pagesDropdown.firstChild)
+        
         pagesDropdown.removeChild(pagesDropdown.lastElementChild)
 
         
@@ -172,15 +211,20 @@ function clearForumBox(){
 
 document.addEventListener('click', async (e) =>
     {
-       
+        
+        
         var element = e.target
+      
         //console.log(element.classList)
         if (element.className === "page"){
             
             //console.log(element.innerHTML)
+            
+            
             dropBtn.innerHTML = 'Page: ' + element.innerHTML
             pageNum = Number(element.innerHTML)
             filtersChanged = true
+            
 
         } else if(element.className === "limit"){
             //console.log(element.innerHTML)
@@ -188,7 +232,14 @@ document.addEventListener('click', async (e) =>
             pageLim = Number(element.innerHTML)
             filtersChanged = true
             pagesValidate()
-        } else{
+        } else if (element.className == "user" && forumNewHeader.className == "forumNewHeader activeForum"){
+
+
+             forumNewHeader.classList.remove('activeForum')
+           
+
+            loadThread()
+            
 
         }
     })
@@ -362,6 +413,7 @@ refreshBtn.addEventListener('click', async ()=>{
 
     
  
+    clearForumBox()
 
     loadMessages(res)
     pagesValidate()
