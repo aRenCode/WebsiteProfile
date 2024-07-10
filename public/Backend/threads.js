@@ -25,7 +25,7 @@ router.post('/addThread', async (req, res) => {
 
         })
 
-        const check = await newThreads.find({name: info.name}).limit(1)
+        /*const check = await newThreads.find({name: info.name}).limit(1)
         
         
         if(check.length > 0){
@@ -42,20 +42,42 @@ router.post('/addThread', async (req, res) => {
         
     } else{
         res.status(400).send({status: 'failed'})
+    }*/
+
+        try {
+            const existingThread = await newThreads.findOne({ name: info.name });
+        
+            if (existingThread) {
+                await addThread.save()
+                lastThreadId++;
+                res.status(200).send({status: 'success'})
+            } else {
+
+                res.status(400).send({status: 'failed', message: 'no thread found'})
+
+            }
+        } catch (err) {
+            console.error('Error:', err);
+            res.status(400).send({status: 'failed', message: 'error'})
+            // Handle error
+        }
     }
 })
 
 router.get('/getThreads', async (req, res) => {
     
 
-        const threads = await newThreads.find()
+     const threads = await newThreads.find()
         if (threads){
          lastThreadId = threads[threads.length-1].id
         res.status(200).send({status: 'success', threads: threads})
     } else{
     
         res.status(400).send({status: 'failed'})
+
     }
+
+     
     
 })
 
