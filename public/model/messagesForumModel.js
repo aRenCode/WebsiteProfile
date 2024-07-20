@@ -19,4 +19,8 @@ const regSchema = new Schema({
         required: true
     }
 });
-module.exports = mongoose.model('Messages', regSchema);
+
+
+//module.exports = mongoose.model('Messages', regSchema);
+
+module.exports = regSchema;

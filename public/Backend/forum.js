@@ -3,7 +3,9 @@ const path = require('path')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 //const Schema = require('../model/model');
-const newMessage = require('../model/messagesForumModel')
+const regSchema = require('../model/messagesForumModel')
+
+mongoose.pluralize(null)
 
 const router = express.Router()
 let lastMessageDate;
@@ -13,12 +15,16 @@ let pageNum = 1
 let dateStart = '0001-01-01'
 let dateEnd = '9999-12-31'
 let fromUser = '.*'
+let threadName = 'Messages'
+const secondaryCon = mongoose.createConnection('mongodb+srv://pryvya:test123@aren.a04dm6v.mongodb.net/threadMessages')
+let newMessage =  secondaryCon.model(threadName, regSchema)
 
-mongoose.connect('mongodb+srv://pryvya:test123@aren.a04dm6v.mongodb.net/Users')
 
 
 
-db = mongoose.connection
+
+
+db = secondaryCon.connection
 
 
 
@@ -28,8 +34,12 @@ db = mongoose.connection
 router.post('/addMessage', async (req, res)=>
     {
 
+        if(lastId != 0){
         lastId = await newMessage.find().sort({ date: -1}).limit(1)
         lastId = lastId[0].id
+    }
+
+
 
         const {parcel} = req.body
 
@@ -59,19 +69,46 @@ router.get('/getPages', async (req, res) =>{
     }
 })
 
+router.post('/threadChange', (req, res) =>{
+    const {parcel} = req.body
+    if(parcel){
+
+        
+        threadName = parcel.threadName
+        console.log(threadName)
+
+        //secondaryCon.collection(threadName)
+        newMessage = secondaryCon.model(threadName, regSchema)
+        res.status(200).send({success:"success"})
+    } else{
+        res.status(400).send({success:"failed"})
+    }
+})
+
 router.get('/getLast', async (req, res) => {
 
     //get last id 
     lastId = await newMessage.find().sort({ id: -1}).limit(1)
 
+    if(lastId.length > 0){
     lastId = lastId[0].id
+    } else{
+        lastId = 0
+    }
 
 
 
     const data = await newMessage.find().sort({ id: 1}).limit(pageLim);
 
     //getInfoForServer
+    if(data.length > 0){
     lastMessageDate = data[data.length-1].date
+    }
+    else{
+       //const currentDate = new Date()
+        //const [year, month, date] = [currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()]
+        lastMessageDate = new Date()
+    }
 
     if (data){
         res.status(200).send({status: 'success', texts: data})

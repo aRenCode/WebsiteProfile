@@ -15,4 +15,4 @@ const regSchema = new Schema({
         required: true
     }
 });
-module.exports = mongoose.model('Users', regSchema);   
+module.exports = mongoose.model('users', regSchema);   

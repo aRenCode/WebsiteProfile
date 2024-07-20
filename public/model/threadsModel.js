@@ -16,4 +16,4 @@ const regSchema = new Schema({
     }
 
 });
-module.exports = mongoose.model('Threads', regSchema);
+module.exports = mongoose.model('threads', regSchema);

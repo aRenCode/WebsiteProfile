@@ -181,13 +181,11 @@ function pagesValidate(){
         
     }
 
-    console.log('Pages: ' + pages)
-    console.log(numberOfMessages)
 
 
     let temp = Math.ceil(numberOfMessages/pageLim)
 
-    console.log(temp)
+
     while(pages > temp){
         pages--;
         
@@ -233,6 +231,21 @@ document.addEventListener('click', async (e) =>
             filtersChanged = true
             pagesValidate()
         } else if (element.className == "user" && forumNewHeader.className == "forumNewHeader activeForum"){
+
+
+            const send = await fetch(baseUrl + 'forum/threadChange', {
+                method: 'POST',
+                headers:{
+                    "Content-Type":'application/json'
+                },
+                body: JSON.stringify({
+                    parcel:{
+                        threadName: element.innerHTML
+                    }
+                })
+            })
+
+
 
 
              forumNewHeader.classList.remove('activeForum')
@@ -369,7 +382,7 @@ findUserBtn.addEventListener('click', async ()=>{
         findUser.classList.remove('active')
     } else if (h2FindUser.innerHTML === 'Forum Name to Find'){
 
-        console.log(usernameInputFilter.value)
+        //console.log(usernameInputFilter.value)
         if(usernameInputFilter.value != ""){
             let res = await fetch(baseUrl + 'threads/findThreads', {
                 method: 'POST',
@@ -412,8 +425,9 @@ refreshBtn.addEventListener('click', async ()=>{
 
 
     
+    
  
-    clearForumBox()
+    //clearForumBox()
 
     loadMessages(res)
     pagesValidate()
@@ -445,13 +459,15 @@ refreshBtn.addEventListener('click', async ()=>{
     res = await res.json()
 
     if (res.status === "success"){
-        forumBox.innerHTML = '';
+        //forumBox.innerHTML = '';
 
 
         if(res.specificFilter == true){
             numberOfMessages = res.length
+            console.log(numberOfMessages)
         }
-        
+        console.log('asdsadasd')
+        clearForumBox()
         loadMessages(res)
         pagesValidate()
 
