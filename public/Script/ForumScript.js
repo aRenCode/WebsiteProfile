@@ -18,6 +18,8 @@ const messageInput = document.querySelector('.messageInput')
 const usernameInputFilter = document.querySelector('.nameInput')
 const limitBtn = document.getElementById('limBtn')
 const fromBtn = document.getElementById('fromBtn')
+const colorChangeForm = document.querySelector('.colorChange')
+const closeChangeColor = document.querySelector('.icon-close-change-color')
 const dtStartBtn = document.getElementById('dateStart')
 const dtEndBtn = document.getElementById('dateEnd')
 const clearFltrBtn = document.getElementById('clearBtn')
@@ -41,6 +43,8 @@ let dateStart = '0001-01-01';
 let dateEnd = '9999-12-31';
 let filtersChanged = false
 let numberOfMessages = 0
+const months = [  "January", "February", "March", "April", "May", "June", 
+    "July", "August", "September", "October", "November", "December"]
 
 
 async function loadThread(){
@@ -109,6 +113,14 @@ async function loadMessages(messages){
             const div = document.createElement('div')
             div.classList.add('item')
 
+            const aDate = document.createElement('a')
+            
+            let date = new Date(element.date)
+            //console.log(date)
+            let dateFormatted = document.createTextNode(`     (${date.getDate()} ${months[date.getMonth()]} ${date.getHours()}:${date.getMinutes()})`)
+            aDate.appendChild(dateFormatted)
+            aDate.classList.add('time')
+
             const aName = document.createElement('a')
             let text = document.createTextNode(element.username.toString())
             aName.appendChild(text)
@@ -122,6 +134,7 @@ async function loadMessages(messages){
 
             div.appendChild(aName)
             div.appendChild(aMessage)
+            div.appendChild(aDate)
             forumBox.appendChild(div)
 
 
@@ -254,6 +267,9 @@ document.addEventListener('click', async (e) =>
             loadThread()
             
 
+        } else if (element.className == "user" && forumNewHeader.className == "forumNewHeader"){
+
+            colorChangeForm.classList.add('active')
         }
     })
 
@@ -312,6 +328,10 @@ dtEndBtn.addEventListener('click', ()=>{
 
 closeFindUser.addEventListener('click', ()=>{
     findUser.classList.remove('active')
+})
+
+closeChangeColor.addEventListener('click', ()=>{
+    colorChangeForm.classList.remove('active')
 })
 
 clearFltrBtn.addEventListener('click', ()=>{

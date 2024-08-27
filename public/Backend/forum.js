@@ -34,6 +34,7 @@ db = secondaryCon.connection
 router.post('/addMessage', async (req, res)=>
     {
 
+        console.log(lastId)
         if(lastId != 0){
         lastId = await newMessage.find().sort({ date: -1}).limit(1)
         lastId = lastId[0].id
