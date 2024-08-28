@@ -17,6 +17,10 @@ const regSchema = new Schema({
     msg: {
         type: String,
         required: true
+    },
+    color:{
+        type: String,
+        required:true
     }
 });
 

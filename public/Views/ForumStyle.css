@@ -493,6 +493,9 @@ body {
     font-weight: 500;
 }
 
+.colorChange .colorPicker{
+    margin: 1em;
+}
 
 
 

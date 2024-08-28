@@ -16,6 +16,7 @@ let dateStart = '0001-01-01'
 let dateEnd = '9999-12-31'
 let fromUser = '.*'
 let threadName = 'Messages'
+
 const secondaryCon = mongoose.createConnection('mongodb+srv://pryvya:test123@aren.a04dm6v.mongodb.net/threadMessages')
 let newMessage =  secondaryCon.model(threadName, regSchema)
 
@@ -48,7 +49,8 @@ router.post('/addMessage', async (req, res)=>
             id: lastId+1,
             username:parcel.Username,
             date: parcel.Date,
-            msg: parcel.Message
+            msg: parcel.Message,
+            color: parcel.color
         })
 
         
@@ -127,7 +129,7 @@ router.get('/newMessages', async (req, res) => {
             $lte: new Date(dateEnd+ "T23:59:59.999Z") 
         },
         username : {$regex : fromUser},
-        id: { $gt: lastId }
+        id: { $gt: (pageNum-1)*pageLim }
     
     });
     
@@ -138,6 +140,7 @@ router.get('/newMessages', async (req, res) => {
     }
 
     lastId = await newMessage.find().sort({ id: -1}).limit(1)
+
     lastId = lastId[0].id
 
 })
@@ -170,7 +173,7 @@ router.post('/newFilters', async (req, res) => {
             $lte: new Date(dateEnd+ "T23:59:59.999Z")
         },
         //id: {$gte: fromId, $lte: toId},
-        username : {$regex : fromUser}
+        username : {$regex : `^${fromUser}$`}
     
     });
 
@@ -209,6 +212,44 @@ router.post('/newFilters', async (req, res) => {
         res.status(400).send({status: 'failed'})
     }
 
+
+})
+
+router.post('/changeMessageColor', async (req, res) =>{
+
+
+    const {info} = req.body
+
+
+    colorValue = info.color
+try{
+    await newMessage.updateOne({id: info.id}, {$set: {color: colorValue}});
+    res.status(200).send({status: 'success'})
+} catch{
+    console.error('Error updating messages:', error);
+    res.status(400).send({status: 'failed'})
+}
+    
+
+})
+
+router.post('/changeAllMessagesColors', async (req, res) =>{
+
+
+    const {info} = req.body
+
+    colorValue = info.color
+
+    try{
+    await newMessage.updateMany({username: info.name}, {$set: {color: colorValue}} );
+    res.status(200).send({status: 'success'})
+    } catch (error) {
+        // Handle any error that occurred during the update
+        console.error('Error updating message:', error);
+        res.status(400).send({status: 'failed'})
+    }
+    
+    
 
 })
 

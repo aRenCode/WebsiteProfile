@@ -20,6 +20,9 @@ const limitBtn = document.getElementById('limBtn')
 const fromBtn = document.getElementById('fromBtn')
 const colorChangeForm = document.querySelector('.colorChange')
 const closeChangeColor = document.querySelector('.icon-close-change-color')
+const colorChosen = document.getElementById('colorPicker')
+const colorCheckbox = document.getElementById('allTexts')
+const applyColor = document.getElementById('applyColor')
 const dtStartBtn = document.getElementById('dateStart')
 const dtEndBtn = document.getElementById('dateEnd')
 const clearFltrBtn = document.getElementById('clearBtn')
@@ -43,8 +46,10 @@ let dateStart = '0001-01-01';
 let dateEnd = '9999-12-31';
 let filtersChanged = false
 let numberOfMessages = 0
+let colorValue = "#5F9EA0"
 const months = [  "January", "February", "March", "April", "May", "June", 
     "July", "August", "September", "October", "November", "December"]
+let messageId = 0
 
 
 async function loadThread(){
@@ -58,7 +63,7 @@ async function loadThread(){
     countpages = await countpages.json()
     if(countpages.status ==="success"){
         pages = countpages.number
-        
+        pagesValidate()
 
     } else{
         console.log('Error')
@@ -107,6 +112,7 @@ async function loadMessages(messages){
 
     if (messages.status === 'success'){
 
+        if(messages.texts.length != 0){
         const data = messages.texts
 
         data.forEach((element) => {
@@ -122,6 +128,7 @@ async function loadMessages(messages){
             aDate.classList.add('time')
 
             const aName = document.createElement('a')
+            aName.style.color = element.color
             let text = document.createTextNode(element.username.toString())
             aName.appendChild(text)
             aName.classList.add('user')
@@ -137,8 +144,13 @@ async function loadMessages(messages){
             div.appendChild(aDate)
             forumBox.appendChild(div)
 
+        
 
         })
+
+    }else{
+        
+    }
 
     } else{
         console.log("Something went wrong 0_o")
@@ -269,7 +281,26 @@ document.addEventListener('click', async (e) =>
 
         } else if (element.className == "user" && forumNewHeader.className == "forumNewHeader"){
 
+            /*
+            CHANGE LATER FOR PROPER USER AUTHENTIFICATION TO CHANGE COLOR
+            USING INNER HTML FOR FASTER TESTING WITHOUT PROPERLY LOGGING IN
+            ----------------------------------------------------------------------------------------------------------------
+            ----------------------------------------------------------------------------------------------------------------
+            */ 
+
+            if(element.innerHTML== loginBtn.innerHTML){
+
+                
+            //const tempForumBox = document.querySelector('.forumBox')
+
+            const specificChild = element.parentElement
+
+            const allChildren = Array.from(forumBox.children)
+
+            messageId = ((pageNum -1) * pageLim) + allChildren.indexOf(specificChild) + 1
             colorChangeForm.classList.add('active')
+            
+            }
         }
     })
 
@@ -279,6 +310,58 @@ dropBtn.addEventListener('click', () =>{
     pagesValidate()
 
 
+})
+
+applyColor.addEventListener('click',async ()=>{
+                /*
+            CHANGE LATER FOR PROPER USER AUTHENTIFICATION TO CHANGE COLOR
+            USING INNER HTML FOR FASTER TESTING WITHOUT PROPERLY LOGGING IN
+            ----------------------------------------------------------------------------------------------------------------
+            ----------------------------------------------------------------------------------------------------------------
+            */ 
+    if(colorCheckbox.checked){
+        let res = await fetch(baseUrl + 'forum/changeAllMessagesColors',{
+            method: 'POST',
+            headers:{
+                "Content-Type":'application/json'
+            },
+            body: JSON.stringify({
+                info:{
+                    name: loginBtn.innerHTML,
+                    color: colorChosen.value.toString()
+
+                }
+            })
+
+
+
+        })
+        
+    } else{
+        console.log(colorChosen.value.toString())
+        let res = await fetch(baseUrl + 'forum/changeMessageColor',{
+            method: 'POST',
+            headers:{
+                "Content-Type":'application/json'
+            },
+            body: JSON.stringify({
+                info:{
+                    id: messageId,
+                    color: colorChosen.value.toString()
+
+                }
+            })
+
+
+
+        })
+    }
+
+    colorChangeForm.classList.remove('active')
+
+    
+
+    
 })
 
 addBtn.addEventListener('click', () =>{
@@ -449,8 +532,14 @@ refreshBtn.addEventListener('click', async ()=>{
  
     //clearForumBox()
 
+    if(res.texts.length!=0){
+        clearForumBox()
     loadMessages(res)
     pagesValidate()
+    }
+    else{
+
+    }
     
 
 
@@ -544,13 +633,14 @@ sendBtn.addEventListener('click', async ()=>{
                 parcel:{
                 Username: loginBtn.innerHTML,
                 Date: new Date(),
-                Message: input
+                Message: input,
+                color: colorValue.toString()
                 }
             })
         })
 
         const res = await send.json()
-        if (res.status === "success"){
+        if (res.status === "success" && forumBox.childElementCount < pageLim){
             const div = document.createElement('div')
             div.classList.add('item')
 
